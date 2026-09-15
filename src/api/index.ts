@@ -1679,6 +1679,14 @@ export const api = {
       const res: any = await apiClient.post('/superadmin/plans', data);
       return res.data;
     },
+    update: async (id: string, data: any) => {
+      const res: any = await apiClient.put(`/superadmin/plans/${id}`, data);
+      return res.data;
+    },
+    delete: async (id: string) => {
+      const res: any = await apiClient.delete(`/superadmin/plans/${id}`);
+      return res.data;
+    },
   },
 
 

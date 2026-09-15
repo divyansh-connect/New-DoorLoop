@@ -253,12 +253,13 @@ export const NewPropertyPage: React.FC = () => {
         {/* --- SECTION 4: PROPERTY DETAILS --- */}
         <div className="space-y-4">
           <h3 className="font-bold text-sm text-foreground uppercase border-b pb-2">Property Parameters</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-1">
               <label className="text-xs font-bold text-muted-foreground uppercase">Year Built</label>
               <Input type="number" {...register('yearBuilt', { valueAsNumber: true })} />
             </div>
 
+            {/* Hidden Total Buildings and Total Units fields
             <div className="space-y-1">
               <label className="text-xs font-bold text-muted-foreground uppercase">Total Buildings</label>
               <Input type="number" {...register('totalBuildings', { valueAsNumber: true })} />
@@ -268,6 +269,7 @@ export const NewPropertyPage: React.FC = () => {
               <label className="text-xs font-bold text-muted-foreground uppercase">Total Units</label>
               <Input type="number" {...register('totalUnits', { valueAsNumber: true })} />
             </div>
+            */}
 
             <div className="space-y-1">
               <label className="text-xs font-bold text-muted-foreground uppercase">Square Footage</label>

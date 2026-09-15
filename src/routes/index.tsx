@@ -293,8 +293,8 @@ const ProtectedWrapper: React.FC<{ children: React.ReactNode }> = ({ children })
       navigate({ to: '/' });
       return;
     }
-    // Redirect Owner/Tenant/Staff from Root to their dashboards
-    if (location.pathname === '/') {
+    // Redirect Owner/Tenant/Staff from Root or /dashboard to their dashboards
+    if (location.pathname === '/' || location.pathname === '/dashboard') {
       if (user?.role === 'Owner') {
         navigate({ to: '/owner' });
       } else if (user?.role === 'Tenant') {
@@ -319,7 +319,11 @@ const ProtectedWrapper: React.FC<{ children: React.ReactNode }> = ({ children })
   // Role Access Guard
   let hasAccess = true;
   if (!isIntegrationsPath) {
-    if (user?.role === 'Owner' && !isOwnerPath) {
+    if (location.pathname === '/dashboard' || location.pathname === '/') {
+      if (user?.role === 'Owner' || user?.role === 'Tenant' || user?.role === 'Maintenance Staff') {
+        hasAccess = true;
+      }
+    } else if (user?.role === 'Owner' && !isOwnerPath) {
       hasAccess = false;
     } else if (user?.role === 'Tenant' && !isTenantPath) {
       hasAccess = false;
@@ -2765,11 +2769,12 @@ const CompanyUsagePage: React.FC = () => {
   );
 };
 
-// 4a. PRICING PLANS MANAGER (CREATE & LIST PLANS)
+// 4a. PRICING PLANS MANAGER (CREATE, EDIT, DELETE & LIST PLANS)
 const SubscriptionPlansPage: React.FC = () => {
   const { t } = useTranslation();
   const [plans, setPlans] = React.useState<any[]>([]);
   const [loading, setLoading] = React.useState<boolean>(true);
+  const [editingPlanId, setEditingPlanId] = React.useState<string | null>(null);
 
   const fetchPlans = React.useCallback(async () => {
     try {
@@ -2794,23 +2799,57 @@ const SubscriptionPlansPage: React.FC = () => {
     e.preventDefault();
     if (!newPlan.name || !newPlan.price) return;
     try {
-      await api.plans.create({
-        name: newPlan.name,
-        price: parseFloat(newPlan.price),
-        billingCycle: newPlan.cycle,
-        maxUnits: parseInt(newPlan.units) || 500,
-        features: newPlan.features || 'Standard Features',
-      });
+      if (editingPlanId) {
+        await api.plans.update(editingPlanId, {
+          name: newPlan.name,
+          price: parseFloat(newPlan.price),
+          billingCycle: newPlan.cycle,
+          maxUnits: parseInt(newPlan.units) || 500,
+          features: newPlan.features || 'Standard Features',
+        });
+      } else {
+        await api.plans.create({
+          name: newPlan.name,
+          price: parseFloat(newPlan.price),
+          billingCycle: newPlan.cycle,
+          maxUnits: parseInt(newPlan.units) || 500,
+          features: newPlan.features || 'Standard Features',
+        });
+      }
       fetchPlans();
     } catch (err) {
       console.error(err);
     }
-    setNewPlan({ name: '', price: '', cycle: 'Monthly', units: '', storage: '', features: '' });
-    setShowCreate(false);
+    handleCancel();
+  };
+
+  const handleEdit = (p: any) => {
+    setEditingPlanId(p.id);
+    setNewPlan({
+      name: p.name || '',
+      price: (p.price || '').toString(),
+      cycle: p.billingCycle || 'Monthly',
+      units: (p.maxUnits || '').toString(),
+      storage: (p.maxProperties || '').toString(),
+      features: p.features || '',
+    });
+    setShowCreate(true);
+  };
+
+  const handleDelete = async (id: string) => {
+    if (window.confirm('Are you sure you want to delete this subscription plan?')) {
+      try {
+        await api.plans.delete(id);
+        fetchPlans();
+      } catch (err) {
+        console.error('Failed to delete plan:', err);
+      }
+    }
   };
 
   const handleCancel = () => {
     setShowCreate(false);
+    setEditingPlanId(null);
     setNewPlan({ name: '', price: '', cycle: 'Monthly', units: '', storage: '', features: '' });
   };
 
@@ -2830,11 +2869,15 @@ const SubscriptionPlansPage: React.FC = () => {
         }}
       />
 
-      {showCreate && (
-        <form onSubmit={handleSubmit} className="bg-card border rounded-xl p-6 shadow-sm space-y-4 max-w-2xl">
-          <h2 className="text-sm font-extrabold uppercase tracking-wide border-b pb-2">
-            {t('subscriptionsPage.newPlanTitle')}
-          </h2>
+      <FormDialog
+        open={showCreate}
+        onOpenChange={(open) => {
+          if (!open) handleCancel();
+        }}
+        title={editingPlanId ? 'Edit Pricing Plan' : t('subscriptionsPage.newPlanTitle')}
+        description="Configure pricing structures, property limits, and included features."
+      >
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4 text-xs">
             <div className="space-y-1">
               <label className="text-[10px] font-bold text-muted-foreground uppercase">{t('subscriptionsPage.planName')}</label>
@@ -2843,7 +2886,7 @@ const SubscriptionPlansPage: React.FC = () => {
                 value={newPlan.name}
                 onChange={e => setNewPlan(prev => ({ ...prev, name: e.target.value }))}
                 placeholder="e.g. Pro Plus Plan"
-                className="w-full p-2.5 rounded border bg-secondary text-xs font-semibold"
+                className="w-full p-2.5 rounded border bg-secondary text-xs font-semibold text-foreground"
               />
             </div>
             <div className="space-y-1">
@@ -2854,7 +2897,7 @@ const SubscriptionPlansPage: React.FC = () => {
                 value={newPlan.price}
                 onChange={e => setNewPlan(prev => ({ ...prev, price: e.target.value }))}
                 placeholder="e.g. 199"
-                className="w-full p-2.5 rounded border bg-secondary text-xs font-semibold"
+                className="w-full p-2.5 rounded border bg-secondary text-xs font-semibold text-foreground"
               />
             </div>
             <div className="space-y-1">
@@ -2862,7 +2905,7 @@ const SubscriptionPlansPage: React.FC = () => {
               <select
                 value={newPlan.cycle}
                 onChange={e => setNewPlan(prev => ({ ...prev, cycle: e.target.value }))}
-                className="w-full p-2.5 rounded border bg-secondary text-xs font-semibold focus:outline-none"
+                className="w-full p-2.5 rounded border bg-secondary text-xs font-semibold text-foreground focus:outline-none"
               >
                 <option value="Monthly">{t('status.Monthly')}</option>
                 <option value="Annual">{t('status.Annual')}</option>
@@ -2874,7 +2917,7 @@ const SubscriptionPlansPage: React.FC = () => {
                 value={newPlan.units}
                 onChange={e => setNewPlan(prev => ({ ...prev, units: e.target.value }))}
                 placeholder="e.g. 500"
-                className="w-full p-2.5 rounded border bg-secondary text-xs font-semibold"
+                className="w-full p-2.5 rounded border bg-secondary text-xs font-semibold text-foreground"
               />
             </div>
             <div className="space-y-1 text-xs col-span-2">
@@ -2883,19 +2926,19 @@ const SubscriptionPlansPage: React.FC = () => {
                 value={newPlan.features}
                 onChange={e => setNewPlan(prev => ({ ...prev, features: e.target.value }))}
                 placeholder="List features separated by commas..."
-                rows={2}
-                className="w-full p-2.5 rounded border bg-secondary text-xs font-semibold"
+                rows={3}
+                className="w-full p-2.5 rounded border bg-secondary text-xs font-semibold text-foreground"
               />
             </div>
           </div>
-          <div className="border-t pt-4 flex justify-end space-x-2">
+          <div className="border-t border-border pt-4 flex justify-end space-x-2">
             <Button type="button" variant="outline" onClick={handleCancel}>{t('subscriptionsPage.cancel')}</Button>
             <Button type="submit">
-              {t('subscriptionsPage.publishPlanBtn')}
+              {editingPlanId ? 'Update Plan' : t('subscriptionsPage.publishPlanBtn')}
             </Button>
           </div>
         </form>
-      )}
+      </FormDialog>
 
       {loading ? (
         <div className="p-6 text-xs text-muted-foreground">Loading subscription plans from database...</div>
@@ -2931,6 +2974,26 @@ const SubscriptionPlansPage: React.FC = () => {
                     <p className="font-bold text-primary mt-1 text-[11px] leading-relaxed">{p.features}</p>
                   </div>
                 </div>
+              </div>
+
+              {/* Action Buttons: Edit & Delete */}
+              <div className="pt-4 mt-4 border-t flex items-center justify-end space-x-2">
+                <Button 
+                  size="sm" 
+                  variant="outline" 
+                  onClick={() => handleEdit(p)}
+                  className="h-8 text-xs font-semibold gap-1.5"
+                >
+                  <Edit className="w-3.5 h-3.5" /> Edit
+                </Button>
+                <Button 
+                  size="sm" 
+                  variant="destructive" 
+                  onClick={() => handleDelete(p.id)}
+                  className="h-8 text-xs font-semibold gap-1.5"
+                >
+                  <Trash2 className="w-3.5 h-3.5" /> Delete
+                </Button>
               </div>
             </div>
           ))}

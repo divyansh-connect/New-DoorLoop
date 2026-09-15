@@ -71,6 +71,7 @@ export const DraftPropertiesPage: React.FC = () => {
         </span>
       ),
     },
+    /*
     {
       accessorKey: 'nycBin',
       header: 'NYC BIN #',
@@ -80,6 +81,7 @@ export const DraftPropertiesPage: React.FC = () => {
         </span>
       ),
     },
+    */
     {
       accessorKey: 'createdAt',
       header: 'Created On',

@@ -52,11 +52,20 @@ export const BuildingsPage: React.FC = () => {
     register,
     handleSubmit,
     reset,
+    watch,
     formState: { errors },
   } = useForm<BuildingFormValues>({
     resolver: zodResolver(buildingSchema),
     defaultValues: { floors: 3, unitsCount: 12, status: 'Active' },
   });
+
+  const selectedPropertyId = watch('propertyId');
+  const selectedProperty = properties.find((p) => p.id === selectedPropertyId);
+  const selectedPropertyAddress = selectedProperty
+    ? ([selectedProperty.streetAddress, selectedProperty.city, selectedProperty.state, selectedProperty.zip]
+        .filter(Boolean)
+        .join(', ') || selectedProperty.address || '')
+    : '';
 
   // Mutations
   const createMutation = useMutation({
@@ -120,10 +129,14 @@ export const BuildingsPage: React.FC = () => {
   };
 
   const onSubmit = (values: BuildingFormValues) => {
+    const payload = {
+      ...values,
+      address: selectedPropertyAddress || values.address || '',
+    };
     if (editingBuilding) {
-      updateMutation.mutate(values);
+      updateMutation.mutate(payload);
     } else {
-      createMutation.mutate(values);
+      createMutation.mutate(payload);
     }
   };
 
@@ -225,20 +238,27 @@ export const BuildingsPage: React.FC = () => {
             {errors.name && <p className="text-rose-500 text-xs">{errors.name.message}</p>}
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-1">
-              <label className="text-xs font-bold text-muted-foreground uppercase">Number of Floors</label>
-              <Input type="number" {...register('floors', { valueAsNumber: true })} />
-            </div>
-            <div className="space-y-1">
-              <label className="text-xs font-bold text-muted-foreground uppercase">Total Units</label>
-              <Input type="number" {...register('unitsCount', { valueAsNumber: true })} />
-            </div>
+          <div className="space-y-1">
+            <label className="text-xs font-bold text-muted-foreground uppercase">Number of Floors</label>
+            <Input type="number" {...register('floors', { valueAsNumber: true })} />
           </div>
+
+          {/* Hidden Total Units field
+          <div className="space-y-1">
+            <label className="text-xs font-bold text-muted-foreground uppercase">Total Units</label>
+            <Input type="number" {...register('unitsCount', { valueAsNumber: true })} />
+          </div>
+          */}
 
           <div className="space-y-1">
             <label className="text-xs font-bold text-muted-foreground uppercase">Street Address</label>
-            <Input placeholder="Leave blank to use property address" {...register('address')} />
+            <Input 
+              value={selectedPropertyAddress} 
+              disabled 
+              readOnly
+              placeholder="Property address will appear here"
+              className="bg-muted/50 text-muted-foreground cursor-not-allowed font-medium"
+            />
           </div>
 
           <div className="space-y-1">

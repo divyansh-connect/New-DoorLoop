@@ -19,16 +19,31 @@ interface ScreeningReportDrawerProps {
 export const ScreeningReportDrawer: React.FC<ScreeningReportDrawerProps> = ({ screening, onClose }) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const [activeScreening, setActiveScreening] = React.useState<ScreeningCheck | null>(screening);
+
+  React.useEffect(() => {
+    setActiveScreening(screening);
+  }, [screening]);
+
+  const currentScreening = activeScreening || screening;
 
   const generateReportMutation = useMutation({
-    mutationFn: () => api.screening.generateReport(screening?.id || ''),
-    onSuccess: () => {
+    mutationFn: () => api.screening.generateReport(currentScreening?.id || ''),
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['screening-checks-list'] });
+      if (currentScreening) {
+        setActiveScreening({
+          ...currentScreening,
+          screeningStatus: 'Completed',
+          creditScore: data?.creditScore || currentScreening.creditScore || 720,
+          identityVerificationStatus: data?.identityVerificationStatus || 'Verified',
+        });
+      }
     },
   });
 
   const approveMutation = useMutation({
-    mutationFn: () => api.screening.approve(screening?.id || ''),
+    mutationFn: () => api.screening.approve(currentScreening?.id || ''),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['screening-checks-list'] });
       alert('Applicant approved! Converting to active Resident. Redirecting to lease creation...');
@@ -38,7 +53,7 @@ export const ScreeningReportDrawer: React.FC<ScreeningReportDrawerProps> = ({ sc
   });
 
   const declineMutation = useMutation({
-    mutationFn: () => api.screening.decline(screening?.id || ''),
+    mutationFn: () => api.screening.decline(currentScreening?.id || ''),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['screening-checks-list'] });
       alert('Application declined. Adverse action notice generated.');
@@ -46,7 +61,10 @@ export const ScreeningReportDrawer: React.FC<ScreeningReportDrawerProps> = ({ sc
     },
   });
 
-  if (!screening) return null;
+  if (!currentScreening) return null;
+
+  const screeningStatusStr = (currentScreening.screeningStatus || (currentScreening as any).status || '').toLowerCase();
+  const isCompleted = screeningStatusStr === 'completed' || screeningStatusStr === 'approved' || screeningStatusStr === 'declined';
 
   const getVerificationStatusColor = (status: string) => {
     if (status === 'Verified') return 'text-emerald-500 bg-emerald-500/10 border-emerald-500/25';
@@ -69,7 +87,7 @@ export const ScreeningReportDrawer: React.FC<ScreeningReportDrawerProps> = ({ sc
       <div className="p-4 border-b flex justify-between items-center bg-secondary/10 shrink-0">
         <div>
           <h3 className="font-extrabold text-sm uppercase tracking-wide">Screening Report Statement</h3>
-          <p className="text-[10px] text-muted-foreground font-mono mt-0.5">APPLICANT: {screening.applicantName} • PROVIDER: {screening.screeningProvider || 'TransUnion'}</p>
+          <p className="text-[10px] text-muted-foreground font-mono mt-0.5">APPLICANT: {currentScreening.applicantName} • PROVIDER: {currentScreening.screeningProvider || 'TransUnion'}</p>
         </div>
         <button onClick={onClose} className="p-1 rounded-lg hover:bg-secondary/20 transition">
           <X className="w-5 h-5 text-muted-foreground" />
@@ -83,18 +101,18 @@ export const ScreeningReportDrawer: React.FC<ScreeningReportDrawerProps> = ({ sc
         <Card className="p-5 border bg-secondary/5 grid grid-cols-2 gap-4">
           <div>
             <span className="text-[9px] uppercase text-muted-foreground">Applicant Name</span>
-            <p className="text-sm font-bold text-foreground mt-0.5">{screening.applicantName}</p>
-            <p className="text-muted-foreground text-[10px] mt-0.5">{screening.applicantEmail} • {screening.applicantPhone}</p>
+            <p className="text-sm font-bold text-foreground mt-0.5">{currentScreening.applicantName}</p>
+            <p className="text-muted-foreground text-[10px] mt-0.5">{currentScreening.applicantEmail} • {currentScreening.applicantPhone}</p>
           </div>
           <div>
             <span className="text-[9px] uppercase text-muted-foreground">Location Applied</span>
-            <p className="text-sm font-bold text-foreground mt-0.5">{screening.propertyName}</p>
-            <p className="text-muted-foreground text-[10px] mt-0.5">Unit Number: {screening.unitNumber}</p>
+            <p className="text-sm font-bold text-foreground mt-0.5">{currentScreening.propertyName}</p>
+            <p className="text-muted-foreground text-[10px] mt-0.5">Unit Number: {currentScreening.unitNumber}</p>
           </div>
           <div className="border-t pt-2.5 col-span-2 grid grid-cols-3 gap-2 text-[10px] font-medium text-muted-foreground">
-            <span className="flex items-center gap-1"><Calendar className="w-3.5 h-3.5" /> Sent: {screening.invitationSentAt}</span>
-            {screening.consentSubmittedAt && <span className="flex items-center gap-1"><CheckCircle className="w-3.5 h-3.5 text-emerald-500" /> Consent: {screening.consentSubmittedAt}</span>}
-            {screening.reportGeneratedAt && <span className="flex items-center gap-1"><CheckCircle className="w-3.5 h-3.5 text-emerald-500" /> Report: {screening.reportGeneratedAt}</span>}
+            <span className="flex items-center gap-1"><Calendar className="w-3.5 h-3.5" /> Sent: {currentScreening.invitationSentAt}</span>
+            {currentScreening.consentSubmittedAt && <span className="flex items-center gap-1"><CheckCircle className="w-3.5 h-3.5 text-emerald-500" /> Consent: {currentScreening.consentSubmittedAt}</span>}
+            {currentScreening.reportGeneratedAt && <span className="flex items-center gap-1"><CheckCircle className="w-3.5 h-3.5 text-emerald-500" /> Report: {currentScreening.reportGeneratedAt}</span>}
           </div>
         </Card>
 
@@ -110,19 +128,19 @@ export const ScreeningReportDrawer: React.FC<ScreeningReportDrawerProps> = ({ sc
                   <p className="text-[10px] text-muted-foreground font-medium">Verify SSN matches applicant profile records.</p>
                 </div>
               </div>
-              <span className={`px-2.5 py-1 rounded-full text-[10px] border font-black ${getVerificationStatusColor(screening.identityVerificationStatus || (screening.authorized ? 'Verified' : 'Pending'))}`}>
-                {screening.identityVerificationStatus || (screening.authorized ? 'Verified' : 'Pending')}
+              <span className={`px-2.5 py-1 rounded-full text-[10px] border font-black ${getVerificationStatusColor(currentScreening.identityVerificationStatus || (currentScreening.authorized ? 'Verified' : 'Pending'))}`}>
+                {currentScreening.identityVerificationStatus || (currentScreening.authorized ? 'Verified' : 'Pending')}
               </span>
             </div>
-            {(screening.dob || screening.ssn) && (
+            {(currentScreening.dob || currentScreening.ssn) && (
               <div className="grid grid-cols-2 gap-2 border-t border-border/40 pt-2 text-[10px] font-bold">
                 <div>
                   <span className="text-[8px] uppercase text-muted-foreground">Date of Birth</span>
-                  <p className="text-foreground">{screening.dob || '—'}</p>
+                  <p className="text-foreground">{currentScreening.dob || '—'}</p>
                 </div>
                 <div>
                   <span className="text-[8px] uppercase text-muted-foreground">Social Security Number</span>
-                  <p className="text-foreground">{screening.ssn ? `***-**-${screening.ssn.slice(-4)}` : '—'}</p>
+                  <p className="text-foreground">{currentScreening.ssn ? `***-**-${currentScreening.ssn.slice(-4)}` : '—'}</p>
                 </div>
               </div>
             )}
@@ -130,21 +148,21 @@ export const ScreeningReportDrawer: React.FC<ScreeningReportDrawerProps> = ({ sc
         </div>
 
         {/* TENANT UPLOADED DOCUMENT */}
-        {screening.documentUrl && (
+        {currentScreening.documentUrl && (
           <div className="space-y-2">
             <h4 className="font-extrabold text-[10px] text-muted-foreground uppercase tracking-wider border-b pb-1">Uploaded Verification Document</h4>
             <div className="p-3 bg-primary/10 border border-primary/20 rounded-xl flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <FileText className="w-5 h-5 text-primary" />
                 <div>
-                  <p className="font-bold text-foreground">{screening.documentName || 'Identity_Proof_Document.pdf'}</p>
+                  <p className="font-bold text-foreground">{currentScreening.documentName || 'Identity_Proof_Document.pdf'}</p>
                   <p className="text-[10px] text-muted-foreground font-medium">Uploaded by applicant for background verify check.</p>
                 </div>
               </div>
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => window.open(screening.documentUrl, '_blank')}
+                onClick={() => window.open(currentScreening.documentUrl, '_blank')}
                 className="text-primary border-primary/30 hover:bg-primary/10 font-bold py-1 h-8 text-[10px] flex items-center gap-1"
               >
                 <Download className="w-3.5 h-3.5" /> View/Download
@@ -161,21 +179,21 @@ export const ScreeningReportDrawer: React.FC<ScreeningReportDrawerProps> = ({ sc
             {/* Score box */}
             <div className="p-4 bg-secondary/15 border border-border/40 rounded-xl flex flex-col items-center justify-center text-center">
               <span className="text-[9px] uppercase text-muted-foreground">Credit Score</span>
-              <p className="text-3xl font-black text-primary mt-1">{screening.creditScore || '—'}</p>
+              <p className="text-3xl font-black text-primary mt-1">{currentScreening.creditScore || '—'}</p>
               <span className="text-[8px] text-muted-foreground font-medium mt-1">TransUnion ResidentScore</span>
             </div>
 
             {/* Recommendation box */}
             <div className="p-4 bg-secondary/15 border border-border/40 rounded-xl flex flex-col items-center justify-center text-center sm:col-span-2">
               <span className="text-[9px] uppercase text-muted-foreground">Credit Recommendation</span>
-              <p className={`px-3 py-1 rounded-full text-xs font-black border uppercase mt-2.5 ${getRecommendationColor(screening.creditRecommendation)}`}>
-                {screening.creditRecommendation || 'Pending check'}
+              <p className={`px-3 py-1 rounded-full text-xs font-black border uppercase mt-2.5 ${getRecommendationColor(currentScreening.creditRecommendation)}`}>
+                {currentScreening.creditRecommendation || 'Pending check'}
               </p>
               <span className="text-[8px] text-muted-foreground font-medium mt-1.5">Based on credit check risk models</span>
             </div>
           </div>
 
-          {screening.screeningStatus === 'Completed' && (
+          {(currentScreening.screeningStatus === 'Completed' || (currentScreening as any).status === 'Completed') && (
             <div className="grid grid-cols-3 gap-2.5 pt-1 text-[10px] font-medium text-center">
               <div className="bg-secondary/10 p-2.5 border rounded-lg">
                 <p className="text-muted-foreground uppercase text-[8px]">Payment History</p>
@@ -201,9 +219,9 @@ export const ScreeningReportDrawer: React.FC<ScreeningReportDrawerProps> = ({ sc
             <h4 className="font-extrabold text-[10px] text-muted-foreground uppercase tracking-wider border-b pb-1">Criminal History</h4>
             <div className="p-4 bg-secondary/15 border border-border/40 rounded-xl flex flex-col justify-between h-28">
               <div className="flex items-start gap-2">
-                {(screening as any).criminalBackground === 'Passed' || screening.criminalStatus === 'No Records Found' ? (
+                {(currentScreening as any).criminalBackground === 'Passed' || currentScreening.criminalStatus === 'No Records Found' ? (
                   <Shield className="w-5 h-5 text-emerald-500 shrink-0" />
-                ) : (screening as any).criminalBackground === 'Flagged' || screening.criminalStatus === 'Records Found' ? (
+                ) : (currentScreening as any).criminalBackground === 'Flagged' || currentScreening.criminalStatus === 'Records Found' ? (
                   <ShieldAlert className="w-5 h-5 text-rose-500 shrink-0" />
                 ) : (
                   <Loader2 className="w-5 h-5 text-muted-foreground animate-spin shrink-0" />
@@ -213,7 +231,7 @@ export const ScreeningReportDrawer: React.FC<ScreeningReportDrawerProps> = ({ sc
                   <p className="text-[10px] text-muted-foreground font-medium mt-0.5">National databases scan.</p>
                 </div>
               </div>
-              <p className="text-[10px] font-bold text-foreground">{screening.criminalStatus || ((screening as any).criminalBackground === 'Passed' ? 'No Records Found' : 'Records Found')}</p>
+              <p className="text-[10px] font-bold text-foreground">{currentScreening.criminalStatus || ((currentScreening as any).criminalBackground === 'Passed' ? 'No Records Found' : 'Records Found')}</p>
             </div>
           </div>
 
@@ -222,9 +240,9 @@ export const ScreeningReportDrawer: React.FC<ScreeningReportDrawerProps> = ({ sc
             <h4 className="font-extrabold text-[10px] text-muted-foreground uppercase tracking-wider border-b pb-1">Eviction History</h4>
             <div className="p-4 bg-secondary/15 border border-border/40 rounded-xl flex flex-col justify-between h-28">
               <div className="flex items-start gap-2">
-                {(screening as any).evictionHistory === 'No Records' || screening.evictionStatus === 'No Records Found' ? (
+                {(currentScreening as any).evictionHistory === 'No Records' || currentScreening.evictionStatus === 'No Records Found' ? (
                   <Shield className="w-5 h-5 text-emerald-500 shrink-0" />
-                ) : (screening as any).evictionHistory === 'Flagged' || screening.evictionStatus === 'Records Found' ? (
+                ) : (currentScreening as any).evictionHistory === 'Flagged' || currentScreening.evictionStatus === 'Records Found' ? (
                   <ShieldAlert className="w-5 h-5 text-rose-500 shrink-0" />
                 ) : (
                   <Loader2 className="w-5 h-5 text-muted-foreground animate-spin shrink-0" />
@@ -234,13 +252,13 @@ export const ScreeningReportDrawer: React.FC<ScreeningReportDrawerProps> = ({ sc
                   <p className="text-[10px] text-muted-foreground font-medium mt-0.5">Past landlord court logs.</p>
                 </div>
               </div>
-              <p className="text-[10px] font-bold text-foreground">{screening.evictionStatus || ((screening as any).evictionHistory === 'No Records' ? 'No Records Found' : 'Records Found')}</p>
+              <p className="text-[10px] font-bold text-foreground">{currentScreening.evictionStatus || ((currentScreening as any).evictionHistory === 'No Records' ? 'No Records Found' : 'Records Found')}</p>
             </div>
           </div>
         </div>
 
         {/* INCOME VERIFICATION */}
-        {screening.screeningStatus === 'Completed' && (
+        {(currentScreening.screeningStatus === 'Completed' || (currentScreening as any).status === 'Completed') && (
           <div className="space-y-2">
             <h4 className="font-extrabold text-[10px] text-muted-foreground uppercase tracking-wider border-b pb-1">Income Verification</h4>
             <div className="p-4 bg-secondary/15 border border-border/40 rounded-xl grid grid-cols-3 gap-2">
@@ -261,7 +279,7 @@ export const ScreeningReportDrawer: React.FC<ScreeningReportDrawerProps> = ({ sc
         )}
 
         {/* DOWNLOADABLE DOCUMENTS */}
-        {screening.screeningStatus === 'Completed' && (
+        {(currentScreening.screeningStatus === 'Completed' || (currentScreening as any).status === 'Completed') && (
           <div className="space-y-2">
             <h4 className="font-extrabold text-[10px] text-muted-foreground uppercase tracking-wider border-b pb-1">Downloadable Reports</h4>
             <div className="grid grid-cols-3 gap-2 font-bold text-[10px]">
@@ -297,22 +315,10 @@ export const ScreeningReportDrawer: React.FC<ScreeningReportDrawerProps> = ({ sc
 
       {/* DRAWER FOOTER ACTIONS */}
       <div className="p-4 border-t bg-secondary/15 flex justify-end gap-2 shrink-0">
-        <Button variant="outline" onClick={onClose} disabled={approveMutation.isPending || declineMutation.isPending || generateReportMutation.isPending}>Close</Button>
-        {(screening.screeningStatus === 'Processing' || screening.screeningStatus === 'Pending Approval' || (screening as any).status === 'Processing' || (screening as any).status === 'Pending Approval') && (
-          <Button
-            onClick={() => generateReportMutation.mutate()}
-            className="bg-emerald-500 hover:bg-emerald-600 text-white font-bold flex items-center gap-1"
-            disabled={generateReportMutation.isPending}
-          >
-            {generateReportMutation.isPending ? (
-              <Loader2 className="w-3.5 h-3.5 animate-spin" />
-            ) : (
-              <Play className="w-3.5 h-3.5" />
-            )}
-            Run Check & Generate Report
-          </Button>
-        )}
-        {(screening.screeningStatus === 'Completed' || (screening as any).status === 'Completed') && (
+        <Button variant="outline" onClick={onClose} disabled={approveMutation.isPending || declineMutation.isPending || generateReportMutation.isPending}>
+          Close
+        </Button>
+        {isCompleted ? (
           <>
             <Button
               onClick={() => declineMutation.mutate()}
@@ -336,6 +342,19 @@ export const ScreeningReportDrawer: React.FC<ScreeningReportDrawerProps> = ({ sc
               Approve Applicant
             </Button>
           </>
+        ) : (
+          <Button
+            onClick={() => generateReportMutation.mutate()}
+            className="bg-emerald-500 hover:bg-emerald-600 text-white font-bold flex items-center gap-1"
+            disabled={generateReportMutation.isPending}
+          >
+            {generateReportMutation.isPending ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            ) : (
+              <Play className="w-3.5 h-3.5" />
+            )}
+            Run Check & Generate Report
+          </Button>
         )}
       </div>
 

@@ -151,13 +151,13 @@ export const LoginPage: React.FC<LoginPageProps> = ({ navigate }) => {
     setApiError(null);
     try {
       await login(data.email, data.password);
-      const emailLower = data.email.toLowerCase();
-      if (emailLower.includes('owner')) {
+      const loggedUser = useAuthStore.getState().user;
+      if (loggedUser?.role === 'Owner') {
         navigate('/owner');
-      } else if (emailLower.includes('tenant')) {
+      } else if (loggedUser?.role === 'Tenant') {
         navigate('/tenant');
-      } else if (emailLower.includes('staff') || emailLower.includes('tech')) {
-        navigate('/staff/maintenance');
+      } else if (loggedUser?.role === 'Maintenance Staff') {
+        navigate('/staff/dashboard');
       } else {
         navigate('/dashboard');
       }
@@ -248,83 +248,31 @@ export const LoginPage: React.FC<LoginPageProps> = ({ navigate }) => {
           </div>
         )}
 
-        {/* 1-CLICK QUICK DEMO LOGIN BOX */}
+        {/* DEMO CREDENTIALS BOX */}
         <div className="p-4 bg-indigo-50/50 dark:bg-indigo-950/20 border border-indigo-200/80 dark:border-indigo-900/50 rounded-2xl space-y-3">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-black uppercase text-indigo-600 dark:text-indigo-400 tracking-wide flex items-center gap-1">
-              ⚡ 1-CLICK QUICK DEMO LOGIN
+              🔑 DEMO CREDENTIALS
             </span>
             <span className="text-[10px] font-bold bg-indigo-500/10 border border-indigo-300/40 dark:border-indigo-800 text-indigo-600 dark:text-indigo-400 px-2 py-0.5 rounded-md">
-              UI Demo Mode
+              Login Credentials
             </span>
           </div>
 
-          <div className="grid grid-cols-2 gap-2.5">
-            <button
-              type="button"
-              onClick={() => handleQuickAccess('manager@apexpm.com', 'admin123')}
-              className="flex items-center justify-between p-2.5 text-xs font-bold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all text-slate-800 dark:text-slate-200 shadow-sm group"
-            >
-              <span className="flex items-center gap-1.5 truncate">
-                <span>🏢</span> Property Manager
-              </span>
-              <span className="text-slate-400 group-hover:translate-x-0.5 transition-transform text-[11px]">→</span>
-            </button>
+          <div className="space-y-2 text-xs font-semibold text-slate-700 dark:text-slate-300">
+            <div className="p-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl space-y-0.5">
+              <p className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                <span>👑</span> Super Admin:
+              </p>
+              <p className="text-slate-600 dark:text-slate-400 font-mono text-[11px]">admin@apexpm.com / Password: 123456</p>
+            </div>
 
-            <button
-              type="button"
-              onClick={() => handleQuickAccess('admin@apexpm.com', '123456')}
-              className="flex items-center justify-between p-2.5 text-xs font-bold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all text-slate-800 dark:text-slate-200 shadow-sm group"
-            >
-              <span className="flex items-center gap-1.5 truncate">
-                <span>👑</span> Super Admin
-              </span>
-              <span className="text-slate-400 group-hover:translate-x-0.5 transition-transform text-[11px]">→</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleQuickAccess('tenant@apexpm.com', 'admin123')}
-              className="flex items-center justify-between p-2.5 text-xs font-bold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all text-slate-800 dark:text-slate-200 shadow-sm group"
-            >
-              <span className="flex items-center gap-1.5 truncate">
-                <span>🏠</span> Tenant Portal
-              </span>
-              <span className="text-slate-400 group-hover:translate-x-0.5 transition-transform text-[11px]">→</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleQuickAccess('collection@apexpm.com', 'admin123')}
-              className="flex items-center justify-between p-2.5 text-xs font-bold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all text-slate-800 dark:text-slate-200 shadow-sm group"
-            >
-              <span className="flex items-center gap-1.5 truncate">
-                <span>💰</span> Collection Staff
-              </span>
-              <span className="text-slate-400 group-hover:translate-x-0.5 transition-transform text-[11px]">→</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleQuickAccess('staff@apexpm.com', 'admin123')}
-              className="flex items-center justify-between p-2.5 text-xs font-bold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all text-slate-800 dark:text-slate-200 shadow-sm group"
-            >
-              <span className="flex items-center gap-1.5 truncate">
-                <span>🔧</span> Maintenance Staff
-              </span>
-              <span className="text-slate-400 group-hover:translate-x-0.5 transition-transform text-[11px]">→</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleQuickAccess('owner@apexpm.com', 'admin123')}
-              className="flex items-center justify-between p-2.5 text-xs font-bold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all text-slate-800 dark:text-slate-200 shadow-sm group"
-            >
-              <span className="flex items-center gap-1.5 truncate">
-                <span>👤</span> Property Owner
-              </span>
-              <span className="text-slate-400 group-hover:translate-x-0.5 transition-transform text-[11px]">→</span>
-            </button>
+            <div className="p-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl space-y-0.5">
+              <p className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                <span>🏢</span> Property Manager:
+              </p>
+              <p className="text-slate-600 dark:text-slate-400 font-mono text-[11px]">Property@gmail.com / Password: 123456</p>
+            </div>
           </div>
         </div>
 

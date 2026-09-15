@@ -46,12 +46,15 @@ export const AddressForm: React.FC<AddressFormProps> = ({ register, errors }) =>
         </div>
       </div>
 
+      {/* NYC BIN option hidden until requested by client */}
+      {/* 
       <div className="space-y-1">
         <label className="text-xs font-bold text-amber-500 uppercase flex items-center gap-1">
           NYC BIN (Building Identification Number) <span className="text-[10px] text-muted-foreground font-normal">(Optional - For NYC DOB Violations API Sync)</span>
         </label>
         <Input placeholder="e.g. 1000000" {...register('nycBin')} />
       </div>
+      */}
     </div>
   );
 };

@@ -129,6 +129,7 @@ export const PropertiesPage: React.FC = () => {
       id: 'address',
       cell: ({ row }) => <span className="text-muted-foreground text-xs truncate max-w-[150px] inline-block">{row.original.address}</span>,
     },
+    /*
     {
       id: 'nycBin',
       header: 'NYC BIN #',
@@ -142,6 +143,7 @@ export const PropertiesPage: React.FC = () => {
         );
       },
     },
+    */
     {
       accessorKey: 'unitsCount',
       header: t('properties.columns.units'),
