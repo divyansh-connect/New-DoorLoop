@@ -166,10 +166,10 @@ export const LoginPage: React.FC<LoginPageProps> = ({ navigate }) => {
     }
   };
 
-  const handleQuickAccess = (email: string) => {
+  const handleQuickAccess = (email: string, password: string = 'admin123') => {
     setValueLogin('email', email);
-    setValueLogin('password', 'password123');
-    onLoginSubmit({ email, password: 'password123' });
+    setValueLogin('password', password);
+    onLoginSubmit({ email, password });
   };
 
   // Action: Step 1 Next
@@ -317,7 +317,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ navigate }) => {
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => handleQuickAccess('admin@example.com')}
+                onClick={() => handleQuickAccess('admin@apexpm.com', '123456')}
                 className="text-xs h-9 border-slate-200 dark:border-slate-800 hover:bg-primary/5 hover:text-primary hover:border-primary/30 transition-all text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-900"
               >
                 <Building className="w-3.5 h-3.5 mr-1.5 text-slate-400 group-hover:text-primary" /> Admin
@@ -325,7 +325,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ navigate }) => {
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => handleQuickAccess('owner@example.com')}
+                onClick={() => handleQuickAccess('owner@apexpm.com', 'admin123')}
                 className="text-xs h-9 border-slate-200 dark:border-slate-800 hover:bg-primary/5 hover:text-primary hover:border-primary/30 transition-all text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-900"
               >
                 <User className="w-3.5 h-3.5 mr-1.5 text-slate-400 group-hover:text-primary" /> Owner
@@ -333,7 +333,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ navigate }) => {
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => handleQuickAccess('tenant@example.com')}
+                onClick={() => handleQuickAccess('tenant@apexpm.com', 'admin123')}
                 className="text-xs h-9 border-slate-200 dark:border-slate-800 hover:bg-primary/5 hover:text-primary hover:border-primary/30 transition-all text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-900"
               >
                 <User className="w-3.5 h-3.5 mr-1.5 text-slate-400 group-hover:text-primary" /> Tenant
@@ -341,7 +341,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ navigate }) => {
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => handleQuickAccess('staff@example.com')}
+                onClick={() => handleQuickAccess('staff@apexpm.com', 'admin123')}
                 className="text-xs h-9 border-slate-200 dark:border-slate-800 hover:bg-primary/5 hover:text-primary hover:border-primary/30 transition-all text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-900"
               >
                 <Briefcase className="w-3.5 h-3.5 mr-1.5 text-slate-400 group-hover:text-primary" /> Staff
