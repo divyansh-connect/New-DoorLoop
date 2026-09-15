@@ -166,10 +166,11 @@ export const LoginPage: React.FC<LoginPageProps> = ({ navigate }) => {
     }
   };
 
-  const handleQuickAccess = (email: string) => {
+  const handleQuickAccess = (email: string, pass?: string) => {
+    const password = pass || (email.startsWith('admin') ? '123456' : 'admin123');
     setValueLogin('email', email);
-    setValueLogin('password', 'password123');
-    onLoginSubmit({ email, password: 'password123' });
+    setValueLogin('password', password);
+    onLoginSubmit({ email, password });
   };
 
   // Action: Step 1 Next
@@ -225,7 +226,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ navigate }) => {
   // UI: LOGIN VIEW
   if (mode === 'login') {
     return (
-      <div className="space-y-6 text-slate-900 dark:text-white">
+      <div className="space-y-5 text-slate-900 dark:text-white">
         <div className="flex justify-start">
           <button
             type="button"
@@ -238,16 +239,109 @@ export const LoginPage: React.FC<LoginPageProps> = ({ navigate }) => {
 
         <div className="text-center">
           <h1 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">Access Gate</h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Sign in to begin lease simulations</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Sign in or pick a quick demo profile</p>
         </div>
 
         {apiError && (
-          <div className="bg-rose-500/10 border border-rose-500/20 text-rose-500 dark:text-rose-400 p-3 rounded-lg text-xs font-semibold text-center flex items-center justify-center gap-2">
+          <div className="bg-rose-500/10 border border-rose-500/20 text-rose-500 dark:text-rose-400 p-3 rounded-xl text-xs font-semibold text-center flex items-center justify-center gap-2">
             <AlertCircle className="w-4 h-4 shrink-0" />
             <span>{apiError}</span>
           </div>
         )}
 
+        {/* 1-CLICK QUICK DEMO LOGIN BOX */}
+        <div className="p-4 bg-indigo-50/50 dark:bg-indigo-950/20 border border-indigo-200/80 dark:border-indigo-900/50 rounded-2xl space-y-3">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-black uppercase text-indigo-600 dark:text-indigo-400 tracking-wide flex items-center gap-1">
+              ⚡ 1-CLICK QUICK DEMO LOGIN
+            </span>
+            <span className="text-[10px] font-bold bg-indigo-500/10 border border-indigo-300/40 dark:border-indigo-800 text-indigo-600 dark:text-indigo-400 px-2 py-0.5 rounded-md">
+              UI Demo Mode
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 gap-2.5">
+            <button
+              type="button"
+              onClick={() => handleQuickAccess('manager@apexpm.com', 'admin123')}
+              className="flex items-center justify-between p-2.5 text-xs font-bold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all text-slate-800 dark:text-slate-200 shadow-sm group"
+            >
+              <span className="flex items-center gap-1.5 truncate">
+                <span>🏢</span> Property Manager
+              </span>
+              <span className="text-slate-400 group-hover:translate-x-0.5 transition-transform text-[11px]">→</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleQuickAccess('admin@apexpm.com', '123456')}
+              className="flex items-center justify-between p-2.5 text-xs font-bold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all text-slate-800 dark:text-slate-200 shadow-sm group"
+            >
+              <span className="flex items-center gap-1.5 truncate">
+                <span>👑</span> Super Admin
+              </span>
+              <span className="text-slate-400 group-hover:translate-x-0.5 transition-transform text-[11px]">→</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleQuickAccess('tenant@apexpm.com', 'admin123')}
+              className="flex items-center justify-between p-2.5 text-xs font-bold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all text-slate-800 dark:text-slate-200 shadow-sm group"
+            >
+              <span className="flex items-center gap-1.5 truncate">
+                <span>🏠</span> Tenant Portal
+              </span>
+              <span className="text-slate-400 group-hover:translate-x-0.5 transition-transform text-[11px]">→</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleQuickAccess('collection@apexpm.com', 'admin123')}
+              className="flex items-center justify-between p-2.5 text-xs font-bold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all text-slate-800 dark:text-slate-200 shadow-sm group"
+            >
+              <span className="flex items-center gap-1.5 truncate">
+                <span>💰</span> Collection Staff
+              </span>
+              <span className="text-slate-400 group-hover:translate-x-0.5 transition-transform text-[11px]">→</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleQuickAccess('staff@apexpm.com', 'admin123')}
+              className="flex items-center justify-between p-2.5 text-xs font-bold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all text-slate-800 dark:text-slate-200 shadow-sm group"
+            >
+              <span className="flex items-center gap-1.5 truncate">
+                <span>🔧</span> Maintenance Staff
+              </span>
+              <span className="text-slate-400 group-hover:translate-x-0.5 transition-transform text-[11px]">→</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleQuickAccess('owner@apexpm.com', 'admin123')}
+              className="flex items-center justify-between p-2.5 text-xs font-bold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all text-slate-800 dark:text-slate-200 shadow-sm group"
+            >
+              <span className="flex items-center gap-1.5 truncate">
+                <span>👤</span> Property Owner
+              </span>
+              <span className="text-slate-400 group-hover:translate-x-0.5 transition-transform text-[11px]">→</span>
+            </button>
+          </div>
+        </div>
+
+        {/* OR SIGN IN MANUALLY DIVIDER */}
+        <div className="relative my-4">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t border-slate-200 dark:border-slate-800" />
+          </div>
+          <div className="relative flex justify-center text-[10px] uppercase font-bold">
+            <span className="bg-slate-50 dark:bg-[#0f172a] px-3 text-slate-400 tracking-wider">
+              OR SIGN IN MANUALLY
+            </span>
+          </div>
+        </div>
+
+        {/* FORM */}
         <form onSubmit={handleLoginSubmit(onLoginSubmit)} className="space-y-4">
           <div className="space-y-1.5">
             <label className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wide">
@@ -296,58 +390,12 @@ export const LoginPage: React.FC<LoginPageProps> = ({ navigate }) => {
 
           <Button
             type="submit"
-            className="w-full flex items-center justify-center h-10 font-bold bg-primary text-white hover:bg-primary/90 mt-2"
+            className="w-full flex items-center justify-center h-10 font-bold bg-primary text-white hover:bg-primary/90 mt-2 rounded-xl"
             disabled={isSubmittingLogin}
           >
             {isSubmittingLogin ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
             Sign In
           </Button>
-
-          <div className="pt-4 pb-2">
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-slate-200 dark:border-slate-800" />
-              </div>
-              <div className="relative flex justify-center text-[10px] uppercase font-bold">
-                <span className="bg-slate-50 dark:bg-[#0f172a] px-2 text-slate-500 rounded-full">Quick Access</span>
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-2 gap-2 mt-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => handleQuickAccess('admin@example.com')}
-                className="text-xs h-9 border-slate-200 dark:border-slate-800 hover:bg-primary/5 hover:text-primary hover:border-primary/30 transition-all text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-900"
-              >
-                <Building className="w-3.5 h-3.5 mr-1.5 text-slate-400 group-hover:text-primary" /> Admin
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => handleQuickAccess('owner@example.com')}
-                className="text-xs h-9 border-slate-200 dark:border-slate-800 hover:bg-primary/5 hover:text-primary hover:border-primary/30 transition-all text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-900"
-              >
-                <User className="w-3.5 h-3.5 mr-1.5 text-slate-400 group-hover:text-primary" /> Owner
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => handleQuickAccess('tenant@example.com')}
-                className="text-xs h-9 border-slate-200 dark:border-slate-800 hover:bg-primary/5 hover:text-primary hover:border-primary/30 transition-all text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-900"
-              >
-                <User className="w-3.5 h-3.5 mr-1.5 text-slate-400 group-hover:text-primary" /> Tenant
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => handleQuickAccess('staff@example.com')}
-                className="text-xs h-9 border-slate-200 dark:border-slate-800 hover:bg-primary/5 hover:text-primary hover:border-primary/30 transition-all text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-900"
-              >
-                <Briefcase className="w-3.5 h-3.5 mr-1.5 text-slate-400 group-hover:text-primary" /> Staff
-              </Button>
-            </div>
-          </div>
 
           <div className="pt-2 border-t border-slate-200 dark:border-slate-800">
             <Button
@@ -357,7 +405,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ navigate }) => {
                 setApiError(null);
                 setMode('signup-step1');
               }}
-              className="w-full flex items-center justify-center h-10 font-bold border-slate-300 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-900/50 bg-white dark:bg-slate-950/40"
+              className="w-full flex items-center justify-center h-10 font-bold border-slate-300 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-900/50 bg-white dark:bg-slate-950/40 rounded-xl"
             >
               Signup for Tenant
             </Button>
