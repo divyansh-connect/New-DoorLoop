@@ -290,7 +290,7 @@ const ProtectedWrapper: React.FC<{ children: React.ReactNode }> = ({ children })
 
   React.useEffect(() => {
     if (!isAuthenticated) {
-      navigate({ to: '/landing' });
+      navigate({ to: '/' });
       return;
     }
     // Redirect Owner/Tenant/Staff from Root to their dashboards
@@ -464,7 +464,13 @@ const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
   component: () => {
-    const { user } = useAuthStore();
+    const { isAuthenticated, user } = useAuthStore();
+    const navigate = useNavigate();
+
+    if (!isAuthenticated) {
+      return <LandingPage navigate={(path) => navigate({ to: path as any })} />;
+    }
+
     return (
       <ProtectedWrapper>
         {user?.role === 'Super Admin' ? (
