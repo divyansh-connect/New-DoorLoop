@@ -95,7 +95,7 @@ export const InspectionTemplatesPage: React.FC = () => {
 
   const handleCreateNew = () => {
     resetForm();
-    // Pre-populate with standard starter rooms & items for a WhatsLandlord style inspection
+    // Pre-populate with standard starter rooms & items for an Avenix Code Software Technology style inspection
     setRooms([
       {
         name: 'Kitchen',

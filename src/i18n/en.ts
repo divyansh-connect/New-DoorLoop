@@ -71,7 +71,7 @@ export const en = {
   },
   ai: {
     title: "AI Assistant",
-    description: "Interact with the WhatsLandlord Copilot to query your rental business operations.",
+    description: "Interact with the Avenix Code Software Technology Copilot to query your rental business operations.",
     breadcrumbs: {
       home: "Home",
       aiCenter: "AI Center",

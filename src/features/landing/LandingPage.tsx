@@ -178,8 +178,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ navigate }) => {
       {/* Navigation Header */}
       <header className="sticky top-0 z-50 backdrop-blur-md border-b border-slate-800 bg-slate-950/95 text-white h-16 flex items-center justify-between px-6 lg:px-12 transition-colors duration-300 shadow-lg">
         <div className="flex items-center space-x-3">
-          <span className="font-extrabold text-lg tracking-tight text-white">
-            WhatsLandlord
+          <span className="font-extrabold text-sm tracking-tight text-white">
+            Avenix Code Software Technology
           </span>
         </div>
         <nav className="hidden md:flex space-x-8 text-xs font-extrabold text-slate-300">
@@ -498,7 +498,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ navigate }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
           <div className="glass-panel p-6 rounded-2xl space-y-3">
             <p className="text-xs text-slate-700 dark:text-slate-300 italic font-medium leading-relaxed">
-              "Transitioning our 1,500 units to WhatsLandlord solved our communication latency. The Tenant portal interface has made rent collection completely friction-free."
+              "Transitioning our 1,500 units to Avenix Code Software Technology solved our communication latency. The Tenant portal interface has made rent collection completely friction-free."
             </p>
             <div className="text-xs font-bold">
               <p className="text-slate-900 dark:text-white">Marcus Vance</p>
@@ -523,10 +523,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({ navigate }) => {
           {/* Logo and Tagline */}
           <div className="sm:col-span-2 space-y-4">
             <div className="flex items-center space-x-3">
-              <span className="font-extrabold text-lg text-white">WhatsLandlord</span>
+              <span className="font-extrabold text-sm text-white">Avenix Code Software Technology</span>
             </div>
             <p className="text-slate-400 leading-relaxed font-semibold max-w-sm text-[11px]">
-              WhatsLandlord simplifies multi-tenant real estate management, providing high-fidelity portal UI modules and enterprise developer integration matrices.
+              Avenix Code Software Technology simplifies multi-tenant real estate management, providing high-fidelity portal UI modules and enterprise developer integration matrices.
             </p>
           </div>
 
@@ -562,7 +562,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ navigate }) => {
         </div>
 
         <div className="max-w-6xl mx-auto pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-slate-500 text-[10px]">
-          <span>© {new Date().getFullYear()} WhatsLandlord SaaS Systems. All rights reserved.</span>
+          <span>© {new Date().getFullYear()} Avenix Code Software Technology. All rights reserved.</span>
           <div className="flex space-x-6">
             <button className="hover:text-slate-300 transition">Privacy Policy</button>
             <button className="hover:text-slate-300 transition">Terms of Service</button>
@@ -615,7 +615,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ navigate }) => {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1">
                     <label className="text-[10px] uppercase font-bold text-slate-500">Email Address</label>
-                    <input required type="email" placeholder="raj@whatslandlord.com" value={email} onChange={e => setEmail(e.target.value)} className="w-full text-xs font-semibold p-2.5 rounded-lg border bg-slate-50 dark:bg-slate-950 focus:ring-1 focus:ring-primary focus:outline-none text-slate-900 dark:text-white" />
+                    <input required type="email" placeholder="raj@avenixcode.com" value={email} onChange={e => setEmail(e.target.value)} className="w-full text-xs font-semibold p-2.5 rounded-lg border bg-slate-50 dark:bg-slate-950 focus:ring-1 focus:ring-primary focus:outline-none text-slate-900 dark:text-white" />
                   </div>
                   <div className="space-y-1">
                     <label className="text-[10px] uppercase font-bold text-slate-500">Password</label>

@@ -71,7 +71,7 @@ export const es = {
   },
   ai: {
     title: "Asistente IA",
-    description: "Interactúa con WhatsLandlord Copilot para consultar las operaciones de tu negocio.",
+    description: "Interactúa con Avenix Code Software Technology Copilot para consultar las operaciones de tu negocio.",
     breadcrumbs: {
       home: "Inicio",
       aiCenter: "Centro de IA",

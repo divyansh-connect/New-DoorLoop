@@ -3928,7 +3928,7 @@ const PlatformSettingsStorageView: React.FC = () => {
           </div>
           <div className="space-y-1">
             <label className="text-[10px] font-bold text-muted-foreground uppercase">{t('platformSettings.storage.bucket')}</label>
-            <input defaultValue="whatslandlord-saas-production-storage" className="w-full p-2 rounded border bg-secondary text-xs font-semibold" />
+            <input defaultValue="avenixcode-saas-production-storage" className="w-full p-2 rounded border bg-secondary text-xs font-semibold" />
           </div>
         </div>
         <div className="border-t pt-4 flex justify-end">
@@ -3965,7 +3965,7 @@ const PlatformSettingsBrandingView: React.FC = () => {
           </div>
           <div className="space-y-1">
             <label className="text-[10px] font-bold text-muted-foreground uppercase">{t('platformSettings.branding.domain')}</label>
-            <input defaultValue="app.whatslandlord-apex.com" className="w-full p-2 rounded border bg-secondary text-xs font-semibold" />
+            <input defaultValue="app.avenixcode.com" className="w-full p-2 rounded border bg-secondary text-xs font-semibold" />
           </div>
         </div>
         <div className="border-t pt-4 flex justify-end">
@@ -4089,8 +4089,8 @@ const PlatformIntegrationsKeysView: React.FC = () => {
 const PlatformIntegrationsWebhooksView: React.FC = () => {
   const { t } = useTranslation();
   const webhooks = [
-    { url: 'https://api.whatslandlord-apex.com/v1/billing/stripe', events: 'invoice.paid, invoice.payment_failed', status: 'Active' },
-    { url: 'https://api.whatslandlord-apex.com/v1/notifications/twilio-sms', events: 'message.delivered, message.failed', status: 'Active' }
+    { url: 'https://api.avenixcode.com/v1/billing/stripe', events: 'invoice.paid, invoice.payment_failed', status: 'Active' },
+    { url: 'https://api.avenixcode.com/v1/notifications/twilio-sms', events: 'message.delivered, message.failed', status: 'Active' }
   ];
 
   return (

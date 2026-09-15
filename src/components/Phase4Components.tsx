@@ -196,7 +196,7 @@ export const ReceiptPreview: React.FC<ReceiptPreviewProps> = ({
   createdBy,
   companyName = 'Apex Property Management',
   companyPhone = '+1 (555) 234-5678',
-  companyEmail = 'support@whatslandlord.com',
+  companyEmail = 'support@avenixcode.com',
 }) => {
   return (
     <div id="printable-payment-receipt" className="border border-border/80 rounded-2xl p-6 bg-card text-foreground max-w-lg mx-auto space-y-5 shadow-md">

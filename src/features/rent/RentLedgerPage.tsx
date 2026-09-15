@@ -313,7 +313,7 @@ export const RentLedgerPage: React.FC = () => {
                   </span>
                   <h2 className="font-black text-2xl text-primary mt-1.5">{managementCompany}</h2>
                   <p className="text-xs text-muted-foreground font-semibold">
-                    Phone: <span className="text-foreground font-bold">{profile?.phone || '+1 (555) 234-5678'}</span> • Email: <span className="text-foreground font-bold">{profile?.email || 'support@whatslandlord.com'}</span>
+                    Phone: <span className="text-foreground font-bold">{profile?.phone || '+1 (555) 234-5678'}</span> • Email: <span className="text-foreground font-bold">{profile?.email || 'support@avenixcode.com'}</span>
                   </p>
                 </div>
                 <div className="text-[10px] text-muted-foreground uppercase font-bold text-right">

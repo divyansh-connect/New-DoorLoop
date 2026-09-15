@@ -98,7 +98,7 @@ export const PaymentDetailsPage: React.FC = () => {
             createdBy={payment.createdBy}
             companyName={profile?.company || (payment as any).company?.name || 'Apex Property Management'}
             companyPhone={profile?.phone || (payment as any).company?.phone || '+1 (555) 234-5678'}
-            companyEmail={profile?.email || (payment as any).company?.email || 'support@whatslandlord.com'}
+            companyEmail={profile?.email || (payment as any).company?.email || 'support@avenixcode.com'}
           />
         </TabsContent>
 
