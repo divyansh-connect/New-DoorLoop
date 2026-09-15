@@ -464,13 +464,17 @@ const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
   component: () => {
-    const { isAuthenticated, user } = useAuthStore();
     const navigate = useNavigate();
+    return <LandingPage navigate={(path) => navigate({ to: path as any })} />;
+  },
+});
 
-    if (!isAuthenticated) {
-      return <LandingPage navigate={(path) => navigate({ to: path as any })} />;
-    }
-
+// Dashboard Route
+const dashboardRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/dashboard',
+  component: () => {
+    const { user } = useAuthStore();
     return (
       <ProtectedWrapper>
         {user?.role === 'Super Admin' ? (
@@ -5708,6 +5712,7 @@ const delinquencyReportRoute = createRoute({
 // --- REGISTER TREE ---
 const routeTree = rootRoute.addChildren([
   indexRoute,
+  dashboardRoute,
   profileRoute,
   landingRoute,
   loginRoute,

@@ -159,7 +159,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ navigate }) => {
       } else if (emailLower.includes('staff') || emailLower.includes('tech')) {
         navigate('/staff/maintenance');
       } else {
-        navigate('/');
+        navigate('/dashboard');
       }
     } catch (err: any) {
       setApiError(err.message || 'Invalid credentials. Please try again.');
@@ -396,6 +396,8 @@ export const LoginPage: React.FC<LoginPageProps> = ({ navigate }) => {
             Sign In
           </Button>
 
+          {/* Signup for Tenant hidden as requested */}
+          {/* 
           <div className="pt-2 border-t border-slate-200 dark:border-slate-800">
             <Button
               type="button"
@@ -409,6 +411,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ navigate }) => {
               Signup for Tenant
             </Button>
           </div>
+          */}
         </form>
       </div>
     );

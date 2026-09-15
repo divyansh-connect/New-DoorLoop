@@ -40,7 +40,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
 
   // --- SUPER ADMIN MENU ITEMS ---
   const superAdminMenuItems: MenuItem[] = [
-    { title: t('nav.dashboard'), icon: <LayoutDashboard className="w-5 h-5" />, path: '/' },
+    { title: t('nav.dashboard'), icon: <LayoutDashboard className="w-5 h-5" />, path: '/dashboard' },
     {
       title: t('nav.companies'),
       icon: <Building2 className="w-5 h-5" />,
@@ -84,7 +84,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
 
   // --- PROPERTY MANAGER MENU ITEMS ---
   const managerMenuItems: MenuItem[] = [
-    { title: t('nav.dashboard'), icon: <LayoutDashboard className="w-5 h-5" />, path: '/' },
+    { title: t('nav.dashboard'), icon: <LayoutDashboard className="w-5 h-5" />, path: '/dashboard' },
     {
       title: t('nav.properties'),
       icon: <Building2 className="w-5 h-5" />,
@@ -164,7 +164,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
         { title: t('nav.dashboard'), path: '/maintenance' },
         { title: t('nav.serviceRequests'), path: '/maintenance/requests' },
         { title: t('nav.workOrders'), path: '/maintenance/work-orders' },
-        { title: t('nav.violationsAndCode'), path: '/maintenance/violations' },
+        // { title: t('nav.violationsAndCode'), path: '/maintenance/violations' },
         // { title: t('nav.inspections'), path: '/inspections' },
         { title: t('nav.vendors'), path: '/vendors' },
       ],
@@ -202,7 +202,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
 
   // --- COLLECTION MANAGER MENU ITEMS ---
   const collectionManagerMenuItems: MenuItem[] = [
-    { title: t('nav.dashboard'), icon: <LayoutDashboard className="w-5 h-5" />, path: '/' },
+    { title: t('nav.dashboard'), icon: <LayoutDashboard className="w-5 h-5" />, path: '/dashboard' },
     {
       title: t('nav.tenantInvoices'),
       icon: <FileText className="w-5 h-5" />,
@@ -332,7 +332,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   };
 
   const isLinkActive = (path: string, itemTitle?: string) => {
-    if (path === '/') return currentPath === '/';
+    if (path === '/dashboard') return currentPath === '/dashboard' || currentPath === '/';
     if (itemTitle === 'Accounting Ledger') {
       return currentPath === '/accounting' || currentPath.startsWith('/accounting/income') || currentPath === '/accounting/chart-of-accounts';
     }
@@ -342,7 +342,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   // Build Breadcrumbs from Path
   const getBreadcrumbs = () => {
     const parts = currentPath.split('/').filter(Boolean);
-    const crumbs = [{ label: t('header.home', 'Home'), href: '/' }];
+    const crumbs = [{ label: t('header.home', 'Home'), href: '/dashboard' }];
     let currentLink = '';
     parts.forEach((part) => {
       currentLink += `/${part}`;
@@ -386,8 +386,8 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
         <div className="h-16 flex items-center justify-between px-4 border-b border-border/60">
           <div className="flex items-center space-x-3 overflow-hidden">
             {isSidebarOpen && (
-              <span className="font-extrabold text-lg tracking-tight whitespace-nowrap text-foreground">
-                WhatsLandlord
+              <span className="font-extrabold text-sm tracking-tight whitespace-nowrap text-foreground">
+                Avenix Code Software Technology
               </span>
             )}
           </div>
@@ -479,7 +479,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
           <div className="relative flex flex-col w-72 max-w-xs bg-card border-r border-border p-4 animate-in slide-in-from-left duration-200">
             <div className="flex items-center justify-between pb-4 border-b border-border mb-4">
               <div className="flex items-center space-x-2">
-                <span className="font-extrabold text-base">WhatsLandlord</span>
+                <span className="font-extrabold text-sm">Avenix Code Software Technology</span>
               </div>
               <Button variant="ghost" size="icon" onClick={() => setIsMobileOpen(false)}>
                 <X className="w-5 h-5" />
@@ -558,23 +558,25 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
               <Menu className="w-5 h-5" />
             </Button>
 
-            {/* Breadcrumb renderer */}
-            <div className="hidden sm:flex items-center space-x-1.5 text-xs text-muted-foreground font-semibold">
-              {getBreadcrumbs().map((crumb, idx) => (
-                <React.Fragment key={idx}>
-                  {idx > 0 && <ChevronRight className="w-3.5 h-3.5 opacity-55" />}
-                  <span
-                    onClick={() => navigate(crumb.href || '/')}
-                    className={clsx(
-                      'hover:text-primary cursor-pointer transition-colors',
-                      idx === getBreadcrumbs().length - 1 && 'text-foreground font-bold pointer-events-none'
-                    )}
-                  >
-                    {crumb.label}
-                  </span>
-                </React.Fragment>
-              ))}
-            </div>
+            {/* Breadcrumb renderer - Only for Super Admin */}
+            {user?.role === 'Super Admin' && (
+              <div className="hidden sm:flex items-center space-x-1.5 text-xs text-muted-foreground font-semibold">
+                {getBreadcrumbs().map((crumb, idx) => (
+                  <React.Fragment key={idx}>
+                    {idx > 0 && <ChevronRight className="w-3.5 h-3.5 opacity-55" />}
+                    <span
+                      onClick={() => navigate(crumb.href || '/')}
+                      className={clsx(
+                        'hover:text-primary cursor-pointer transition-colors',
+                        idx === getBreadcrumbs().length - 1 && 'text-foreground font-bold pointer-events-none'
+                      )}
+                    >
+                      {crumb.label}
+                    </span>
+                  </React.Fragment>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="flex items-center space-x-3">
