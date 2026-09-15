@@ -93,6 +93,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ navigate }) => {
   const {
     register: registerLogin,
     handleSubmit: handleLoginSubmit,
+    setValue: setValueLogin,
     formState: { errors: loginErrors, isSubmitting: isSubmittingLogin },
   } = useForm<LoginFormInputs>({
     resolver: zodResolver(loginSchema),
@@ -163,6 +164,12 @@ export const LoginPage: React.FC<LoginPageProps> = ({ navigate }) => {
     } catch (err: any) {
       setApiError(err.message || 'Invalid credentials. Please try again.');
     }
+  };
+
+  const handleQuickAccess = (email: string) => {
+    setValueLogin('email', email);
+    setValueLogin('password', 'password123');
+    onLoginSubmit({ email, password: 'password123' });
   };
 
   // Action: Step 1 Next
@@ -296,7 +303,53 @@ export const LoginPage: React.FC<LoginPageProps> = ({ navigate }) => {
             Sign In
           </Button>
 
-          <div className="pt-4 border-t border-slate-200 dark:border-slate-800">
+          <div className="pt-4 pb-2">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t border-slate-200 dark:border-slate-800" />
+              </div>
+              <div className="relative flex justify-center text-[10px] uppercase font-bold">
+                <span className="bg-slate-50 dark:bg-[#0f172a] px-2 text-slate-500 rounded-full">Quick Access</span>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-2 mt-4">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => handleQuickAccess('admin@example.com')}
+                className="text-xs h-9 border-slate-200 dark:border-slate-800 hover:bg-primary/5 hover:text-primary hover:border-primary/30 transition-all text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-900"
+              >
+                <Building className="w-3.5 h-3.5 mr-1.5 text-slate-400 group-hover:text-primary" /> Admin
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => handleQuickAccess('owner@example.com')}
+                className="text-xs h-9 border-slate-200 dark:border-slate-800 hover:bg-primary/5 hover:text-primary hover:border-primary/30 transition-all text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-900"
+              >
+                <User className="w-3.5 h-3.5 mr-1.5 text-slate-400 group-hover:text-primary" /> Owner
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => handleQuickAccess('tenant@example.com')}
+                className="text-xs h-9 border-slate-200 dark:border-slate-800 hover:bg-primary/5 hover:text-primary hover:border-primary/30 transition-all text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-900"
+              >
+                <User className="w-3.5 h-3.5 mr-1.5 text-slate-400 group-hover:text-primary" /> Tenant
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => handleQuickAccess('staff@example.com')}
+                className="text-xs h-9 border-slate-200 dark:border-slate-800 hover:bg-primary/5 hover:text-primary hover:border-primary/30 transition-all text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-900"
+              >
+                <Briefcase className="w-3.5 h-3.5 mr-1.5 text-slate-400 group-hover:text-primary" /> Staff
+              </Button>
+            </div>
+          </div>
+
+          <div className="pt-2 border-t border-slate-200 dark:border-slate-800">
             <Button
               type="button"
               variant="outline"
@@ -304,7 +357,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ navigate }) => {
                 setApiError(null);
                 setMode('signup-step1');
               }}
-              className="w-full flex items-center justify-center h-10 font-bold border-slate-300 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-900/50"
+              className="w-full flex items-center justify-center h-10 font-bold border-slate-300 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-900/50 bg-white dark:bg-slate-950/40"
             >
               Signup for Tenant
             </Button>
