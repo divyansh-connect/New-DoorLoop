@@ -50,7 +50,7 @@ export const UserProfilePage: React.FC = () => {
       setEmail(profile.email || user?.email || 'vendor22@gmail.com');
       setPhone(profile.phone || '(512) 555-0188');
       setDepartment(profile.department || 'Collections & Revenue');
-      setCompany(profile.company || 'Apex Property Management');
+      setCompany(profile.company || user?.companyName || 'Property Management');
     }
   }, [profileResponse, user]);
 

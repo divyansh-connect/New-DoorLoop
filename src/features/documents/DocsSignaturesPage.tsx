@@ -13,10 +13,13 @@ import { SignatureStatusBadge, SignatureTimeline } from '../../components/Docume
 import { DocumentSigningViewerModal } from '../../components/DocumentSigningViewerModal';
 import { Plus, Loader2, PenLine, PenTool, Eye } from 'lucide-react';
 import { ColumnDef } from '@tanstack/react-table';
+import { useAuthStore } from '../../store/useStore';
 
 const WIZARD_STEPS = ['Select Document', 'Select Signers', 'Signature Fields', 'Message', 'Review', 'Send'];
 
 export const DocsSignaturesPage: React.FC = () => {
+  const { user } = useAuthStore();
+  const companyName = user?.companyName || 'Property Management';
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState('');
@@ -249,7 +252,7 @@ export const DocsSignaturesPage: React.FC = () => {
                     <span className="text-[9px] font-bold text-slate-400">Page 1 of 1</span>
                   </div>
                   <div className="space-y-2 text-[10px] leading-relaxed text-slate-600 dark:text-slate-400">
-                    <p>THIS AGREEMENT made on July 20, 2026 by Apex Property Management (&quot;Landlord&quot;) and Tenant.</p>
+                    <p>THIS AGREEMENT made on July 20, 2026 by {companyName} (&quot;Landlord&quot;) and Tenant.</p>
                     <p>1. Tenant agrees to terms, conditions, and monthly rental obligations as specified.</p>
                     <p>2. Property: 104 Main Street, Unit 304, Austin TX.</p>
                     <div className="h-16 bg-slate-100 dark:bg-slate-900 rounded-lg border border-dashed" />

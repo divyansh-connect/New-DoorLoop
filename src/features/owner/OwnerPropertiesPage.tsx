@@ -226,7 +226,7 @@ export const OwnerPropertiesPage: React.FC = () => {
               </div>
               <div>
                 <p className="text-[10px] uppercase text-muted-foreground">Management Co.</p>
-                <p className="font-bold">{selectedProperty.managementCompany || 'Apex Property Management'}</p>
+                <p className="font-bold">{selectedProperty.managementCompany || 'Property Management'}</p>
               </div>
             </div>
 

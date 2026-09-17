@@ -194,7 +194,7 @@ export const ReceiptPreview: React.FC<ReceiptPreviewProps> = ({
   method,
   refNumber,
   createdBy,
-  companyName = 'Apex Property Management',
+  companyName = 'Property Management',
   companyPhone = '+1 (555) 234-5678',
   companyEmail = 'support@avenixcode.com',
 }) => {

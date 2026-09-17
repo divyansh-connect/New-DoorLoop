@@ -2,8 +2,9 @@ import React, { useRef, useState, useEffect } from 'react';
 import { FormDialog } from './FormDialog';
 import { Button } from './ui/Button';
 import { Input } from './ui/Input';
-import { ShieldCheck, FileText, CheckCircle2, Eraser, PenTool, Type, Check } from 'lucide-react';
+import { ShieldCheck, FileText, CheckCircle2, Eraser, PenTool, Type, Check, Download, Eye } from 'lucide-react';
 import { clsx } from 'clsx';
+import { useAuthStore } from '../store/useStore';
 
 interface DocumentSigningViewerModalProps {
   open: boolean;
@@ -18,6 +19,9 @@ export const DocumentSigningViewerModal: React.FC<DocumentSigningViewerModalProp
   requestItem,
   onCompleteSign,
 }) => {
+  const { user } = useAuthStore();
+  const companyName = user?.companyName || 'Property Management';
+
   const [signatureDataUrl, setSignatureDataUrl] = useState<string | null>(requestItem?.signatureDataUrl || null);
   const [signMode, setSignMode] = useState<'draw' | 'type'>('draw');
   const [typedName, setTypedName] = useState(Array.isArray(requestItem?.signers) ? requestItem.signers[0] : (requestItem?.signers || 'Sarah Davis'));
@@ -115,17 +119,6 @@ export const DocumentSigningViewerModal: React.FC<DocumentSigningViewerModalProp
     return canvas.toDataURL('image/png');
   };
 
-  const handleApplySignature = () => {
-    if (signMode === 'draw') {
-      const canvas = canvasRef.current;
-      if (canvas) {
-        setSignatureDataUrl(canvas.toDataURL('image/png'));
-      }
-    } else {
-      setSignatureDataUrl(generateTypedSignature());
-    }
-  };
-
   const handleFinalSubmit = () => {
     let finalDataUrl = signatureDataUrl;
     if (!finalDataUrl) {
@@ -143,6 +136,59 @@ export const DocumentSigningViewerModal: React.FC<DocumentSigningViewerModalProp
       setIsSubmitting(false);
       onOpenChange(false);
     }, 300);
+  };
+
+  const handleDownloadPDF = () => {
+    const docName = requestItem?.documentName || 'Lease_Agreement.pdf';
+    const content = `
+      RESIDENTIAL LEASE AGREEMENT
+      Company: ${companyName}
+      Ref ID: ${requestItem?.id || 'DOC-2026-88'}
+      Signer: ${Array.isArray(requestItem?.signers) ? requestItem.signers.join(', ') : (requestItem?.signers || 'Tenant')}
+      Status: ${requestItem?.status || 'Active'}
+      
+      This document is verified and issued by ${companyName}.
+    `;
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = docName.endsWith('.pdf') ? docName : `${docName}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleViewPDF = () => {
+    const win = window.open('', '_blank');
+    if (!win) return;
+    const docName = requestItem?.documentName || 'Lease Agreement';
+    win.document.write(`
+      <html>
+        <head>
+          <title>${docName} - ${companyName}</title>
+          <style>
+            body { font-family: system-ui, sans-serif; padding: 40px; color: #1e293b; max-width: 800px; margin: 0 auto; }
+            h1 { font-size: 20px; color: #0f172a; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px; }
+            .meta { font-size: 13px; color: #64748b; margin-bottom: 24px; }
+            .box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin: 20px 0; }
+          </style>
+        </head>
+        <body>
+          <h1>RESIDENTIAL LEASE AGREEMENT</h1>
+          <div class="meta">Issued by <strong>${companyName}</strong> | Ref ID: ${requestItem?.id || 'DOC-2026-88'}</div>
+          <p>This Agreement is executed between <strong>${companyName}</strong> (Landlord) and <strong>${Array.isArray(requestItem?.signers) ? requestItem.signers.join(', ') : (requestItem?.signers || 'Tenant')}</strong>.</p>
+          <div class="box">
+            <strong>Property:</strong> 104 Main St, Unit 304, Austin, TX<br/>
+            <strong>Monthly Rent:</strong> $2,450.00 / month
+          </div>
+          <p style="margin-top: 40px; font-size: 11px; color: #94a3b8;">Digitally Generated & Verified Document by ${companyName}</p>
+          <script>window.print();</script>
+        </body>
+      </html>
+    `);
+    win.document.close();
   };
 
   if (!requestItem) return null;
@@ -164,11 +210,19 @@ export const DocumentSigningViewerModal: React.FC<DocumentSigningViewerModalProp
               <p className="text-[10px] opacity-80">{isAlreadySigned ? `Signed on ${requestItem.signedAt || 'Today'} • Audit Hash Verified` : 'Draw or type your signature directly below.'}</p>
             </div>
           </div>
-          {isAlreadySigned && (
-            <span className="bg-emerald-500 text-white font-black text-[9px] px-3 py-1 rounded-full uppercase tracking-wider">
-              SIGNED
-            </span>
-          )}
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" onClick={handleViewPDF} className="h-7 text-[10px] font-bold">
+              <Eye className="w-3 h-3 mr-1" /> View PDF
+            </Button>
+            <Button variant="outline" size="sm" onClick={handleDownloadPDF} className="h-7 text-[10px] font-bold">
+              <Download className="w-3 h-3 mr-1" /> Download PDF
+            </Button>
+            {isAlreadySigned && (
+              <span className="bg-emerald-500 text-white font-black text-[9px] px-3 py-1 rounded-full uppercase tracking-wider">
+                SIGNED
+              </span>
+            )}
+          </div>
         </div>
 
         {/* SIMULATED PDF PAPER SHEET */}
@@ -181,7 +235,7 @@ export const DocumentSigningViewerModal: React.FC<DocumentSigningViewerModalProp
               </div>
               <div>
                 <h2 className="font-extrabold text-sm tracking-tight text-slate-900 dark:text-slate-100">RESIDENTIAL LEASE AGREEMENT</h2>
-                <p className="text-[10px] text-slate-500 font-medium">Ref ID: {requestItem.id || 'DOC-2026-88'} • Apex Property Management</p>
+                <p className="text-[10px] text-slate-500 font-medium">Ref ID: {requestItem.id || 'DOC-2026-88'} • {companyName}</p>
               </div>
             </div>
           </div>
@@ -189,7 +243,7 @@ export const DocumentSigningViewerModal: React.FC<DocumentSigningViewerModalProp
           {/* Document Content */}
           <div className="space-y-3 text-xs leading-relaxed font-sans text-slate-700 dark:text-slate-300">
             <p>
-              This Agreement is made on <strong>July 20, 2026</strong> by and between <strong>Apex Property Management</strong> (Landlord) and <strong>{Array.isArray(requestItem.signers) ? requestItem.signers.join(', ') : (requestItem.signers || 'Tenant')}</strong>.
+              This Agreement is made on <strong>July 20, 2026</strong> by and between <strong>{companyName}</strong> (Landlord) and <strong>{Array.isArray(requestItem.signers) ? requestItem.signers.join(', ') : (requestItem.signers || 'Tenant')}</strong>.
             </p>
 
             <div className="grid grid-cols-2 gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border text-[11px] font-sans">
@@ -198,7 +252,7 @@ export const DocumentSigningViewerModal: React.FC<DocumentSigningViewerModalProp
             </div>
           </div>
 
-          {/* DIRECT EMBEDDED SIGNATURE AREA (NO POPUP MODAL NEEDED!) */}
+          {/* DIRECT EMBEDDED SIGNATURE AREA */}
           <div className="pt-4 border-t font-sans space-y-3">
             <div className="flex justify-between items-center">
               <span className="text-[10px] font-extrabold uppercase text-slate-400">Signature Field</span>
@@ -229,7 +283,6 @@ export const DocumentSigningViewerModal: React.FC<DocumentSigningViewerModalProp
                 <p className="text-[9px] text-emerald-600 font-bold">✓ Digitally Stamped & Verified</p>
               </div>
             ) : signMode === 'draw' ? (
-              /* DIRECT DRAW CANVAS */
               <div className="space-y-2">
                 <div className="relative border-2 border-dashed border-primary/40 rounded-xl bg-slate-50 dark:bg-slate-900 p-1">
                   <canvas
@@ -257,7 +310,6 @@ export const DocumentSigningViewerModal: React.FC<DocumentSigningViewerModalProp
                 </div>
               </div>
             ) : (
-              /* DIRECT TYPE SIGNATURE NAME */
               <div className="space-y-3 p-4 border rounded-xl bg-slate-50 dark:bg-slate-900">
                 <Input
                   value={typedName}

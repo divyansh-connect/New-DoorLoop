@@ -57,6 +57,8 @@ interface User {
   name: string;
   email: string;
   role: string;
+  companyName?: string;
+  companyId?: string;
   avatarUrl?: string;
   token?: string;
   refreshToken?: string;
@@ -68,6 +70,7 @@ interface AuthState {
   login: (email: string, password?: string) => Promise<boolean>;
   logout: () => void;
   refreshAccessToken: () => Promise<boolean>;
+  updateUserCompany: (companyName: string) => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -83,9 +86,11 @@ export const useAuthStore = create<AuthState>((set) => ({
 
     const loggedInUser: User = {
       id: apiUser.id,
-      name: `${apiUser.firstName} ${apiUser.lastName}`,
+      name: `${apiUser.firstName || ''} ${apiUser.lastName || ''}`.trim() || apiUser.name || 'User',
       email: apiUser.email,
-      role: apiUser.roleName,
+      role: apiUser.roleName || apiUser.role,
+      companyName: apiUser.company?.name || apiUser.companyName || apiUser.company || 'Company',
+      companyId: apiUser.companyId,
       token: token,
       refreshToken: refreshToken,
     };
@@ -97,6 +102,14 @@ export const useAuthStore = create<AuthState>((set) => ({
   logout: () => {
     sessionStorage.removeItem('user');
     set({ user: null, isAuthenticated: false });
+  },
+  updateUserCompany: (companyName: string) => {
+    set((state) => {
+      if (!state.user) return state;
+      const updatedUser = { ...state.user, companyName };
+      sessionStorage.setItem('user', JSON.stringify(updatedUser));
+      return { user: updatedUser };
+    });
   },
   refreshAccessToken: async () => {
     try {

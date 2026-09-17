@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import api from '../api';
 import { useAuthStore, useThemeStore, useNotificationStore } from '../store/useStore';
 import { getNotificationRedirectPath } from '../utils/navigation';
+import { formatDateTime } from '../utils/format';
 import { 
   Menu, Bell, Sun, Moon, LogOut, ChevronDown, ChevronRight, User,
   LayoutDashboard, Building2, Home, Key, Users, UserCheck, CreditCard, 
@@ -640,7 +641,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
                         >
                           <div className="flex items-start justify-between">
                             <span className="font-semibold text-xs">{n.title}</span>
-                            <span className="text-[10px] text-muted-foreground">{n.time}</span>
+                            <span className="text-[10px] text-muted-foreground">{formatDateTime(n.time || (n as any).createdAt || (n as any).date)}</span>
                           </div>
                           <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
                             {n.message}
@@ -672,7 +673,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
                 </div>
                 <div className="hidden md:block text-left">
                   <p className="text-xs font-bold leading-tight">{user?.name || 'Manager'}</p>
-                  <p className="text-[10px] text-muted-foreground leading-none">{user?.role || 'Apex Admin'}</p>
+                  <p className="text-[10px] text-muted-foreground leading-none">{user?.role || 'Admin'}</p>
                 </div>
               </Button>
 

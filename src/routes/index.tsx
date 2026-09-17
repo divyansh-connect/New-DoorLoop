@@ -2251,15 +2251,15 @@ const NewCompanyPage: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-1">
             <label className="text-[10px] font-extrabold uppercase text-muted-foreground">{t('newCompanyPage.companyName')}</label>
-            <input name="companyName" required placeholder="Apex Property Management" className="w-full text-xs font-semibold p-2.5 rounded-lg border bg-secondary focus:ring-1 focus:ring-primary focus:outline-none" />
+            <input name="companyName" required placeholder="Acme Property Management" className="w-full text-xs font-semibold p-2.5 rounded-lg border bg-secondary focus:ring-1 focus:ring-primary focus:outline-none" />
           </div>
           <div className="space-y-1">
             <label className="text-[10px] font-extrabold uppercase text-muted-foreground">{t('newCompanyPage.businessName')}</label>
-            <input name="businessName" placeholder="Apex PM LLC" className="w-full text-xs font-semibold p-2.5 rounded-lg border bg-secondary focus:ring-1 focus:ring-primary focus:outline-none" />
+            <input name="businessName" placeholder="Acme PM LLC" className="w-full text-xs font-semibold p-2.5 rounded-lg border bg-secondary focus:ring-1 focus:ring-primary focus:outline-none" />
           </div>
           <div className="space-y-1">
             <label className="text-[10px] font-extrabold uppercase text-muted-foreground">{t('newCompanyPage.companyCode')}</label>
-            <input name="companyCode" required maxLength={5} placeholder="APEX" className="w-full text-xs font-semibold p-2.5 rounded-lg border bg-secondary uppercase focus:ring-1 focus:ring-primary focus:outline-none" />
+            <input name="companyCode" required maxLength={5} placeholder="ACME" className="w-full text-xs font-semibold p-2.5 rounded-lg border bg-secondary uppercase focus:ring-1 focus:ring-primary focus:outline-none" />
           </div>
           <div className="space-y-1">
             <label className="text-[10px] font-extrabold uppercase text-muted-foreground">{t('newCompanyPage.contactPerson')}</label>
@@ -2404,15 +2404,15 @@ const EditCompanyPage: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-1">
             <label className="text-[10px] font-extrabold uppercase text-muted-foreground">{t('newCompanyPage.companyName')}</label>
-            <input value={name} onChange={(e) => setName(e.target.value)} required placeholder="Apex Property Management" className="w-full text-xs font-semibold p-2.5 rounded-lg border bg-secondary focus:ring-1 focus:ring-primary focus:outline-none" />
+            <input value={name} onChange={(e) => setName(e.target.value)} required placeholder="Acme Property Management" className="w-full text-xs font-semibold p-2.5 rounded-lg border bg-secondary focus:ring-1 focus:ring-primary focus:outline-none" />
           </div>
           <div className="space-y-1">
             <label className="text-[10px] font-extrabold uppercase text-muted-foreground">{t('newCompanyPage.businessName')}</label>
-            <input value={businessName} onChange={(e) => setBusinessName(e.target.value)} placeholder="Apex PM LLC" className="w-full text-xs font-semibold p-2.5 rounded-lg border bg-secondary focus:ring-1 focus:ring-primary focus:outline-none" />
+            <input value={businessName} onChange={(e) => setBusinessName(e.target.value)} placeholder="Acme PM LLC" className="w-full text-xs font-semibold p-2.5 rounded-lg border bg-secondary focus:ring-1 focus:ring-primary focus:outline-none" />
           </div>
           <div className="space-y-1">
             <label className="text-[10px] font-extrabold uppercase text-muted-foreground">{t('newCompanyPage.companyCode')}</label>
-            <input value={code} onChange={(e) => setCode(e.target.value)} required maxLength={5} placeholder="APEX" className="w-full text-xs font-semibold p-2.5 rounded-lg border bg-secondary uppercase focus:ring-1 focus:ring-primary focus:outline-none" />
+            <input value={code} onChange={(e) => setCode(e.target.value)} required maxLength={5} placeholder="ACME" className="w-full text-xs font-semibold p-2.5 rounded-lg border bg-secondary uppercase focus:ring-1 focus:ring-primary focus:outline-none" />
           </div>
           <div className="space-y-1">
             <label className="text-[10px] font-extrabold uppercase text-muted-foreground">{t('newCompanyPage.contactPerson')}</label>
@@ -3259,7 +3259,7 @@ const SubscriptionInvoicesPage: React.FC = () => {
 const SubscriptionPaymentsPage: React.FC = () => {
   const { t } = useTranslation();
   const transactions = [
-    { txId: 'ch_stripe_8820', company: 'Apex Property Management', method: 'Visa ending 4242', amount: 149, date: '2026-07-15 09:12', status: 'Success' },
+    { txId: 'ch_stripe_8820', company: 'Acme Property Management', method: 'Visa ending 4242', amount: 149, date: '2026-07-15 09:12', status: 'Success' },
     { txId: 'ch_stripe_4112', company: 'Summit Group', method: 'Mastercard ending 9900', amount: 499, date: '2026-07-10 14:02', status: 'Failed' }
   ];
 
@@ -3654,7 +3654,7 @@ const PlatformUsersPage: React.FC = () => {
 const SupportTicketsPage: React.FC = () => {
   const { t } = useTranslation();
   const tickets = [
-    { id: 'TKT-102', company: 'Apex Property Management', topic: 'SMTP Email Configuration Issue', type: 'Ticket', priority: 'High', status: 'In Progress', date: '2026-07-20' },
+    { id: 'TKT-102', company: 'Acme Property Management', topic: 'SMTP Email Configuration Issue', type: 'Ticket', priority: 'High', status: 'In Progress', date: '2026-07-20' },
     { id: 'FDB-882', company: 'Horizon Living', topic: 'Requested eSignature integration update', type: 'Feedback', priority: 'Medium', status: 'Waiting', date: '2026-07-19' },
     { id: 'TKT-101', company: 'Summit Group', topic: 'Failed stripe webhook payment retry', type: 'Ticket', priority: 'Critical', status: 'Resolved', date: '2026-07-18' },
   ];
@@ -3710,7 +3710,7 @@ const SupportFeedbackPage: React.FC = () => {
   const feedbacks = [
     { id: 'FDB-001', company: 'Horizon Living', score: '5 Stars', text: 'Excellent dashboard layout! It is very easy to manage property leasing workflows now.', date: '2026-07-19' },
     { id: 'FDB-002', company: 'Summit Group', score: '4 Stars', text: 'Feature flags are extremely helpful for rolling out beta properties features.', date: '2026-07-17' },
-    { id: 'FDB-003', company: 'Apex Property Management', score: '5 Stars', text: 'The new dashboard Recharts integration makes global revenue tracking so transparent.', date: '2026-07-15' }
+    { id: 'FDB-003', company: 'Acme Property Management', score: '5 Stars', text: 'The new dashboard Recharts integration makes global revenue tracking so transparent.', date: '2026-07-15' }
   ];
 
   return (
@@ -3804,8 +3804,8 @@ const PlatformSettingsGeneralView: React.FC = () => {
   const [saving, setSaving] = React.useState<boolean>(false);
   const [savedSuccess, setSavedSuccess] = React.useState<boolean>(false);
   const [form, setForm] = React.useState({
-    systemName: 'Apex SaaS Platform',
-    supportEmail: 'support@apexpm.com',
+    systemName: 'Property SaaS Platform',
+    supportEmail: 'support@property.com',
     defaultCurrency: 'USD ($)',
     appTimezone: 'UTC (Coordinated Universal Time)',
     maintenanceMode: 'false',

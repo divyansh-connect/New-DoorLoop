@@ -135,12 +135,7 @@ export const TenantDetailsPage: React.FC = () => {
 
   const property = allProperties.find((p) => p.id === tenant?.propertyId);
   const propertyAddress = property ? property.address : (tenant?.propertyName ? `${tenant.propertyName}, Austin, TX` : 'N/A');
-  const managementCompany = 
-    (property?.managementCompany && !property.managementCompany.includes('Apex'))
-      ? property.managementCompany
-      : (profile?.company && !profile.company.includes('Apex'))
-        ? profile.company
-        : (profile?.company || (tenant as any)?.companyName || property?.managementCompany || 'Property Management');
+  const managementCompany = property?.managementCompany || profile?.company || (tenant as any)?.companyName || 'Property Management';
 
   // Timeline events mock
   const timelineEvents: TimelineEvent[] = [

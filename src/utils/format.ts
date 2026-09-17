@@ -30,3 +30,18 @@ export function getFormattedRequestNumber(req: any, index?: number): string {
 
   return '#1';
 }
+
+export function formatDateTime(dateInput?: Date | string | number | null): string {
+  if (!dateInput) return '';
+  const d = new Date(dateInput);
+  if (isNaN(d.getTime())) return String(dateInput);
+
+  const hours = String(d.getHours()).padStart(2, '0');
+  const minutes = String(d.getMinutes()).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const year = d.getFullYear();
+
+  return `${hours}:${minutes}, ${day}/${month}/${year}`;
+}
+

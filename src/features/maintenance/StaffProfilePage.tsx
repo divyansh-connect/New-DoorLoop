@@ -365,7 +365,7 @@ export const StaffProfilePage: React.FC = () => {
                     <MapPin className="w-4.5 h-4.5 text-primary shrink-0" />
                     <div>
                       <p className="text-[10px] uppercase font-bold text-muted-foreground/60">{t('staffProfilePage.assignedProperties')}</p>
-                      <p className="text-foreground mt-0.5">{profile.assignedProperties || 'Sunset Villas, Apex Heights, Lakeside'}</p>
+                      <p className="text-foreground mt-0.5">{profile.assignedProperties || 'Sunset Villas, Urban Heights, Lakeside'}</p>
                     </div>
                   </div>
 

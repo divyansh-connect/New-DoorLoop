@@ -479,22 +479,6 @@ export const api = {
       try {
         const res: any = await apiClient.get('/accounting/accounts');
         let data = res.data || [];
-        if (data.length === 0) {
-          data = [
-            { id: 'acc-1010', accountCode: '1010', accountName: 'Operating Checking Account', type: 'Asset', balance: 150000 },
-            { id: 'acc-1020', accountCode: '1020', accountName: 'Security Deposit Escrow Account', type: 'Asset', balance: 45000 },
-            { id: 'acc-2010', accountCode: '2010', accountName: 'Accounts Payable (AP)', type: 'Liability', balance: 12000 },
-            { id: 'acc-2020', accountCode: '2020', accountName: 'Tenant Security Deposit Liability', type: 'Liability', balance: 45000 },
-            { id: 'acc-3010', accountCode: '3010', accountName: "Owner's Equity Capital", type: 'Equity', balance: 500000 },
-            { id: 'acc-4010', accountCode: '4010', accountName: 'Rental Revenue Income', type: 'Revenue', balance: 220000 },
-            { id: 'acc-4020', accountCode: '4020', accountName: 'Late Fee & Penalty Income', type: 'Revenue', balance: 4500 },
-            { id: 'acc-4030', accountCode: '4030', accountName: 'Application & Screening Fee Income', type: 'Revenue', balance: 2800 },
-            { id: 'acc-5010', accountCode: '5010', accountName: 'Maintenance & Repair Expense', type: 'Expense', balance: 25000 },
-            { id: 'acc-5020', accountCode: '5020', accountName: 'Property Insurance Expense', type: 'Expense', balance: 18000 },
-            { id: 'acc-5030', accountCode: '5030', accountName: 'Utility & Water Expense', type: 'Expense', balance: 12500 },
-            { id: 'acc-5040', accountCode: '5040', accountName: 'Management & Administrative Fee', type: 'Expense', balance: 35000 },
-          ];
-        }
         return data.map((a: any) => ({
           id: a.id,
           accountNumber: a.accountCode || '',
@@ -2611,6 +2595,24 @@ export const api = {
     test: async (provider: string, data: any) => {
       const res: any = await apiClient.post('/integrations/test', { provider, ...data });
       return res.data;
+    },
+  },
+  settings: {
+    getGeneral: async () => {
+      try {
+        const res: any = await apiClient.get('/superadmin/company-profile');
+        return res.data || { companyName: 'Company' };
+      } catch (e) {
+        return { companyName: 'Company' };
+      }
+    },
+    updateGeneral: async (data: any) => {
+      try {
+        const res: any = await apiClient.put('/superadmin/company-profile', data);
+        return res.data || { success: true };
+      } catch (e) {
+        return { success: true };
+      }
     },
   },
 };

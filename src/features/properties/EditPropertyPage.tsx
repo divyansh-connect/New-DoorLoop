@@ -12,6 +12,7 @@ import { Input } from '../../components/ui/Input';
 import { Select } from '../../components/ui/Select';
 import { Button } from '../../components/ui/Button';
 import { Loader2, ArrowLeft } from 'lucide-react';
+import { useAuthStore } from '../../store/useStore';
 
 const propertyFormSchema = zod.object({
   name: zod.string().min(1, 'Property Name is required'),
@@ -44,6 +45,7 @@ type PropertyFormInputs = zod.infer<typeof propertyFormSchema>;
 export const EditPropertyPage: React.FC = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const { user } = useAuthStore();
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [success, setSuccess] = useState(false);
   const [loadingProperty, setLoadingProperty] = useState(true);
@@ -89,7 +91,7 @@ export const EditPropertyPage: React.FC = () => {
               nycBin: data.nycBin || (data as any).bin || '',
               owner: ownerName,
               ownershipPercentage: data.ownershipPercentage || 100,
-              managementCompany: data.managementCompany || 'Apex Property Management',
+              managementCompany: data.managementCompany || user?.companyName || 'Property Management',
               yearBuilt: data.yearBuilt || 2020,
               totalBuildings: data.totalBuildings || 1,
               totalUnits: data.units?.length || 0,

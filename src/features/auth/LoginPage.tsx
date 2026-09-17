@@ -512,7 +512,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ navigate }) => {
               ) : (
                 properties.map((prop: any) => {
                   const isSelected = selectedProperty?.id === prop.id;
-                  const ownerName = prop.owner?.name || 'Apex Property Manager';
+                  const ownerName = prop.owner?.name || 'Property Manager';
                   return (
                     <div
                       key={prop.id}

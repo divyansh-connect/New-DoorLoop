@@ -31,11 +31,11 @@ export const SettingsPage: React.FC = () => {
 
   const { data: settings, isLoading } = useQuery({
     queryKey: ['settings'],
-    queryFn: () => api.settings.get(),
+    queryFn: () => api.settings.getGeneral(),
   });
 
   const updateMutation = useMutation({
-    mutationFn: (values: SettingsFormValues) => api.settings.update(values),
+    mutationFn: (values: SettingsFormValues) => api.settings.updateGeneral(values),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['settings'] });
       setSuccessMessage('Settings updated successfully!');

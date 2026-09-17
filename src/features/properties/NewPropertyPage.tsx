@@ -13,6 +13,7 @@ import { Select } from '../../components/ui/Select';
 import { Button } from '../../components/ui/Button';
 import { Loader2, ArrowLeft } from 'lucide-react';
 import { mapBackendErrors } from '../../utils/errorMapping';
+import { useAuthStore } from '../../store/useStore';
 
 const propertyFormSchema = zod.object({
   name: zod.string().min(1, 'Property Name is required'),
@@ -80,7 +81,7 @@ export const NewPropertyPage: React.FC = () => {
       type: 'Apartment',
       status: 'Active',
       ownershipPercentage: 100,
-      managementCompany: 'Apex Property Management',
+      managementCompany: 'Property Management',
       yearBuilt: 2010,
       totalBuildings: 1,
       totalUnits: 10,
@@ -139,7 +140,7 @@ export const NewPropertyPage: React.FC = () => {
         status: 'Draft',
         ownerId,
         ownershipPercentage: formValues.ownershipPercentage || 100,
-        managementCompany: formValues.managementCompany || 'Apex Property Management',
+        managementCompany: formValues.managementCompany || 'Property Management',
         address: `${formValues.streetAddress || ''}, ${formValues.city || ''}, ${formValues.state || ''}, ${formValues.country || 'USA'}, ${formValues.zip || ''}`,
         streetAddress: formValues.streetAddress || '',
         city: formValues.city || '',
